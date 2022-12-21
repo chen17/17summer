@@ -101,9 +101,14 @@ public abstract class AbstractIME extends InputMethodService implements
 
   @Override
   public View onCreateCandidatesView() {
-    candidatesContainer = (CandidatesContainer) getLayoutInflater().inflate(
-        R.layout.candidates, null);
-    candidatesContainer.setCandidateViewListener(this);
+    if (candidatesContainer == null) {
+      candidatesContainer = (CandidatesContainer) getLayoutInflater().inflate(
+          R.layout.candidates, null);
+      candidatesContainer.setCandidateViewListener(this);
+    }
+
+    setCandidatesViewShown(true);
+    setExtractViewShown(onEvaluateFullscreenMode());
     return candidatesContainer;
   }
 
@@ -120,6 +125,7 @@ public abstract class AbstractIME extends InputMethodService implements
     // Select a keyboard based on the input type of the editing field.
     keyboardSwitch.onStartInput(attribute.inputType);
     bindKeyboardToInputView();
+    setCandidatesViewShown(true);
   }
 
   @Override
