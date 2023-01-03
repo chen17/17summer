@@ -25,6 +25,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
+import java.util.ArrayList;
+
 
 /**
  * Abstract class extended by ZhuyinIME and CangjieIME.
@@ -79,6 +81,7 @@ public abstract class AbstractIME extends InputMethodService implements
     if ((candidatesEnd != -1) &&
         ((newSelStart != candidatesEnd) || (newSelEnd != candidatesEnd))) {
       // Clear composing text and its candidates for cursor movement.
+      editor.clearCommitHistory();
       escape();
     }
     // Update the caps-lock status for the current cursor position.
@@ -103,7 +106,7 @@ public abstract class AbstractIME extends InputMethodService implements
   public View onCreateCandidatesView() {
     if (candidatesContainer == null) {
       candidatesContainer = (CandidatesContainer) getLayoutInflater().inflate(
-          R.layout.candidates, null);
+              R.layout.candidates, null);
       candidatesContainer.setCandidateViewListener(this);
     }
 
@@ -247,20 +250,20 @@ public abstract class AbstractIME extends InputMethodService implements
     // Commit the picked candidate and suggest its following words.
     commitText(candidate);
     setCandidates(
-        phraseDictionary.getFollowingWords(candidate.charAt(0)), false);
+        phraseDictionary.getFollowingWords(editor.commitHistory()), false);
   }
 
   private void clearCandidates() {
-    setCandidates("", false);
+    setCandidates(new ArrayList<String>(), false);
   }
 
-  private void setCandidates(String words, boolean highlightDefault) {
+  private void setCandidates(ArrayList<String> candidates, boolean highlightDefault) {
+    setCandidatesViewShown((candidates.size() > 0) || editor.hasComposingText());
     if (candidatesContainer != null) {
-      candidatesContainer.setCandidates(words, highlightDefault);
-      setCandidatesViewShown((words.length() > 0) || editor.hasComposingText());
-      if (inputView != null) {
-        inputView.setEscape(candidatesContainer.isShown());
-      }
+      candidatesContainer.setCandidates(candidates, highlightDefault);
+    }
+    if (inputView != null) {
+      inputView.setEscape(candidatesContainer.isShown());
     }
   }
 
@@ -324,7 +327,12 @@ public abstract class AbstractIME extends InputMethodService implements
     if (editor.compose(getCurrentInputConnection(), keyCode)) {
       // Set the candidates for the updated composing-text and provide default
       // highlight for the word candidates.
-      setCandidates(wordDictionary.getWords(editor.composingText()), true);
+      String words = wordDictionary.getWords(editor.composingText());
+      ArrayList<String> a = new ArrayList<String>();
+      for (int i = 0; i < words.length(); i++) {
+        a.add(words.substring(i, i + 1));
+      }
+      setCandidates(a, true);
       return true;
     }
     return false;
