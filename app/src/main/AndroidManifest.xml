@@ -19,13 +19,14 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" 
         package="com.ime.summer"
-        android:versionCode="117"
-        android:versionName="1.0"
+        android:versionCode="20230102"
+        android:versionName="3"
         >
-    <uses-sdk android:minSdkVersion="3"  android:targetSdkVersion="29"/>
+    <uses-sdk android:minSdkVersion="3"  android:targetSdkVersion="33"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
     <application android:label="@string/ime_name" android:icon="@drawable/icon">
         <service android:name=".SummerIME" android:label="@string/summer_ime_name"
+                android:exported="true"
                 android:permission="android.permission.BIND_INPUT_METHOD">
             <intent-filter>
                 <action android:name="android.view.InputMethod" />
@@ -33,7 +34,9 @@
             <meta-data android:name="android.view.im" android:resource="@xml/method" />
         </service>
         
-        <activity android:name="ImePreferenceActivity" android:label="@string/ime_name">
+        <activity android:name="ImePreferenceActivity" android:label="@string/ime_name"
+                  android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
