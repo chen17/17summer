@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ime.zhuyin17;
+package com.ime.summer;
 
 import android.inputmethodservice.Keyboard;
 import android.text.InputType;
@@ -29,7 +29,7 @@ public abstract class Editor {
   private boolean canCompose;
   private boolean enterAsLineBreak;
   private StringBuilder commitHistory = new StringBuilder();;
-
+  
   public CharSequence composingText() {
     return composingText;
   }
