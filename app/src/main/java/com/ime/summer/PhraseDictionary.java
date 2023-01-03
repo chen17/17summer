@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ime.zhuyin17;
+package com.ime.summer;
 
 import android.content.Context;
 import android.util.Log;
@@ -76,7 +76,7 @@ public class PhraseDictionary {
     //         = { 0x1020, 0x0000 } ("_" filled with 0)
     // NOTE The 2 bits encoding only support length of words up to 5.
     ArrayList<String> words = new ArrayList<String>();
-    char[][] dictionary = loader.result();
+    char[][] dictionary = (char [][]) loader.result();
     if (dictionary == null || dictionary.length != 4) {
       return words;
     }
